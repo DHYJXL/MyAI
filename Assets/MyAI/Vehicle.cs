@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Vehicle : MonoBehaviour
 {
-
+    [Header("每秒计算次数")]
+    public float calculateSpeed;
     public float mass = 1;//物体质量
     public float maxForce;//物体受力最大值
     public float maxSpeed;//物体速度最大值
@@ -15,6 +16,8 @@ public class Vehicle : MonoBehaviour
     public Vector3 velocity;//速度
     private Vector3 acceleration;//加速度
 
+    private float timer = 0;
+
     private void Awake()
     {
         steerings = GetComponents<Steering>();
@@ -23,25 +26,32 @@ public class Vehicle : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
-        steeringForce = Vector3.zero;
-        int totalWeight = 0;
-        for (int i = 0; i < steerings.Length; i++)
+        timer -= Time.deltaTime;
+        if (timer < 0)
         {
-            if (steerings[i].enabled)
+            steeringForce = Vector3.zero;
+            int totalWeight = 0;
+            for (int i = 0; i < steerings.Length; i++)
             {
-                steeringForce += steerings[i].force * steerings[i].weight;
-                totalWeight += steerings[i].weight;
+                if (steerings[i].isActive)
+                {
+                    steeringForce += steerings[i].CalculateForce() * steerings[i].weight;
+                    totalWeight += steerings[i].weight;
+                }
             }
+            if (totalWeight > 0)
+            {
+                steeringForce /= totalWeight;
+            }
+            if (steeringForce.magnitude > maxForce)
+            {
+                steeringForce = steeringForce.normalized * maxForce;
+            }
+            acceleration = steeringForce / mass;
+            timer = 1 / calculateSpeed;
         }
-        if (totalWeight > 0)
-        {
-            steeringForce /= totalWeight;
-        }
-        if (steeringForce.magnitude > maxForce)
-        {
-            steeringForce = steeringForce.normalized * maxForce;
-        }
-        acceleration = steeringForce / mass;
+
+       
     }
 
     private void FixedUpdate()
