@@ -11,7 +11,7 @@ public class RayAvoid : Steering
     public int avoidLayer;
     public float wallRayLength = 4f;
     [Header("系数")]
-    public float x = 0.35f;
+    public float x = 2f;
 
 
     public override Vector3 CalculateForce()
@@ -38,7 +38,8 @@ public class RayAvoid : Steering
             bool isHit = Physics.Raycast(ray, out raycastHit, wallRayLength, 1 << avoidLayer);
             if (isHit)
             {
-                Vector3 targetVelocity = (transform.position - raycastHit.point).normalized * holder.maxSpeed * wallRayLength * x / (transform.position - raycastHit.point).magnitude;
+                Vector3 targetVelocity = (transform.position - raycastHit.point).normalized * holder.maxSpeed
+                    * wallRayLength * x / (transform.position - raycastHit.point).magnitude;
 
                 res += targetVelocity - holder.velocity;
                 hitTimer++;
