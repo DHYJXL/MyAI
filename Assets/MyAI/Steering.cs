@@ -5,14 +5,14 @@ using UnityEngine;
 public abstract class Steering : MonoBehaviour
 {
     [Header("权重")]
-    public int weight;
+    public int weight = 1;
     protected Vehicle holder;//持有者
     protected float timer = 0;
     public bool isActive = true;
 
     //public Vector3 force { get; protected set; }//这个操作计算得到的力
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         holder = GetComponent<Vehicle>();
     }
