@@ -7,9 +7,13 @@ public class NewWander : Steering
     public float circleRadius;
     public float circleDistance;
 
+    [Header("每秒计算次数")]
+    public float calculateSpeed;
+    private Vector3 targetOffset = new Vector3();
+
     public override Vector3 CalculateForce()
     {
-        return GetRandomPoint() * holder.maxSpeed - holder.velocity;
+        return targetOffset * holder.maxSpeed - holder.velocity;
     }
 
     /// <summary>
@@ -26,5 +30,15 @@ public class NewWander : Steering
         res *= circleRadius;
         res += transform.forward * circleDistance;
         return res.normalized;
+    }
+
+    private void Update()
+    {
+        timer -= Time.deltaTime;
+        if (timer < 0)
+        {
+            targetOffset = GetRandomPoint();
+            timer = 1 / calculateSpeed;
+        }
     }
 }

@@ -57,8 +57,12 @@ public class Vehicle : MonoBehaviour
     private void FixedUpdate()
     {
         velocity += acceleration * Time.fixedDeltaTime;
-        Vector3 moveDistance = velocity * Time.fixedDeltaTime;
-
+        Vector3 moveDistance = velocity;
+        if (moveDistance.magnitude > maxSpeed)
+        {
+            moveDistance = moveDistance.normalized * maxSpeed;
+        }
+        moveDistance *= Time.fixedDeltaTime;
         transform.position += moveDistance;
         if (velocity.magnitude > 0.001f)
         {
